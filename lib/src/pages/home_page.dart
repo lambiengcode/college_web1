@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             CustomAppBar(),
             SizedBox(
-              height: 500.0,
+              height: MediaQuery.of(context).size.height * .46,
             ),
             // It will cover 1/9 of free spaces
             Body(),
