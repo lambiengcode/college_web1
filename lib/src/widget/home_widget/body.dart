@@ -13,7 +13,7 @@ class Body extends StatelessWidget {
             "Blog".toUpperCase(),
             style: TextStyle(
               fontSize: 88.0,
-              color: Colors.black.withOpacity(.75),
+              color: Colors.blueGrey,
               fontWeight: FontWeight.bold,
               height: 1.4,
             ),

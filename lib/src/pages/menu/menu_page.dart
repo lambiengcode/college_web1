@@ -47,7 +47,7 @@ class _MenuPageState extends State<MenuPage>
   void showCartBottomSheet() {
     showModalBottomSheet(
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(6.0))),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(2.5))),
         isScrollControlled: true,
         context: context,
         builder: (context) {
