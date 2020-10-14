@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:food_web/src/app.dart';
-import 'package:food_web/src/pages/auth/auth_page.dart';
-import '../../constant/constant.dart';
 
-class FoodCard extends StatelessWidget {
+import '../main.dart';
+import '../main.dart';
+import '../main.dart';
+import '../style.dart';
+
+class ItemCard extends StatelessWidget {
   final String title;
   final String ingredient;
   final String image;
@@ -14,7 +16,7 @@ class FoodCard extends StatelessWidget {
   final int type;
   final int kind;
 
-  const FoodCard({
+  const ItemCard({
     Key key,
     this.title,
     this.ingredient,
@@ -55,7 +57,7 @@ class FoodCard extends StatelessWidget {
     return GestureDetector(
       child: Container(
         height: 350,
-        width: 300,
+        width: 380,
         child: Stack(
           children: <Widget>[
             // Big light background
@@ -133,7 +135,7 @@ class FoodCard extends StatelessWidget {
                 child: StreamBuilder(
                   stream: Firestore.instance
                       .collection('users')
-                      .where('id', isEqualTo: App.uid)
+                      .where('id', isEqualTo: HomePage.uid)
                       .snapshots(),
                   builder: (BuildContext context,
                       AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -146,9 +148,9 @@ class FoodCard extends StatelessWidget {
                     return length == 0
                         ? GestureDetector(
                             onTap: () {
-                              if (App.uid == '') {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => AuthenticatePage()));
+                              if (HomePage.uid == '') {
+                                // Navigator.of(context).push(MaterialPageRoute(
+                                //     builder: (context) => AuthenticatePage()));
                               } else {
                                 print("lc");
                               }
@@ -171,7 +173,7 @@ class FoodCard extends StatelessWidget {
                         : StreamBuilder(
                             stream: Firestore.instance
                                 .collection('carts')
-                                .where('id', isEqualTo: App.uid)
+                                .where('id', isEqualTo: HomePage.uid)
                                 .where('orders',
                                     isEqualTo: snapshot.data.documents[0]
                                         ['orders'])
@@ -190,16 +192,20 @@ class FoodCard extends StatelessWidget {
                                   if (length1 == 0) {
                                     if (snapshot.data.documents[0]['orders'] ==
                                         '') {
-                                      String orders = App.uid +
+                                      String orders = HomePage.uid +
                                           DateTime.now()
                                               .microsecondsSinceEpoch
                                               .toString();
-                                      await _updateRoom(orders,
-                                          snapshot.data.documents[0].reference);
-                                      await _addToCart(App.uid, orders);
+                                      await _updateRoom(
+                                        orders,
+                                        snapshot.data.documents[0].reference,
+                                      );
+                                      await _addToCart(HomePage.uid, orders);
                                     } else {
-                                      await _addToCart(App.uid,
-                                          snapshot.data.documents[0]['orders']);
+                                      await _addToCart(
+                                        HomePage.uid,
+                                        snapshot.data.documents[0]['orders'],
+                                      );
                                     }
                                   } else {
                                     print('already');
