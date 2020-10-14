@@ -13,17 +13,32 @@ class Body extends StatelessWidget {
             "Blog".toUpperCase(),
             style: TextStyle(
               fontSize: 88.0,
-              color: Colors.blueGrey,
+              color: Colors.blueGrey.shade400,
               fontWeight: FontWeight.bold,
-              height: 1.4,
+              shadows: <Shadow>[
+                Shadow(
+                  offset: Offset(4.0, 4.0),
+                  blurRadius: 1.2,
+                  color: Color.fromARGB(255, 0, 0, 0),
+                ),
+                Shadow(
+                  offset: Offset(1.0, 1.0),
+                  blurRadius: 4.2,
+                  color: Color.fromARGB(125, 0, 0, 255),
+                ),
+              ],
             ),
           ),
-          Text(
-            "\tHọc hỏi những kiến thức bổ ích về dinh dưỡng và cùng nhau\n\tchia sẻ, góp ý về những loại thực phẩm tốt cho sức khỏe.\n\tHãy bắt đầu ngay để đổi mới bữa ăn gia đình ngay hôm nay.",
-            style: TextStyle(
-              fontSize: 22.0,
-              color: Colors.white,
-              fontWeight: FontWeight.w300,
+          Container(
+            width: 500.0,
+            padding: EdgeInsets.only(left: 6.0, top: 6.0),
+            child: Text(
+              "Học hỏi những kiến thức bổ ích về dinh dưỡng và cùng nhau chia sẻ, góp ý về những loại thực phẩm tốt cho sức khỏe.",
+              style: TextStyle(
+                fontSize: 22.0,
+                color: Colors.white,
+                fontWeight: FontWeight.w300,
+              ),
             ),
           ),
           FittedBox(
@@ -65,7 +80,10 @@ class Body extends StatelessWidget {
                 ],
               ),
             ),
-          )
+          ),
+          SizedBox(
+            height: 40.0,
+          ),
         ],
       ),
     );

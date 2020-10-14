@@ -15,7 +15,7 @@ class DefaultButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: FlatButton(
-        padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+        padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 22.0),
         color: kPrimaryColor,
         onPressed: press,
         child: Text(

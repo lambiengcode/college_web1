@@ -15,15 +15,10 @@ class _CustomAppBarState extends State<CustomAppBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 0.0, horizontal: 0.0),
       padding: EdgeInsets.only(left: 24.0),
-      decoration: BoxDecoration(color: Colors.white, boxShadow: [
-        BoxShadow(
-            offset: Offset(0, 2),
-            blurRadius: 5.0,
-            spreadRadius: .5,
-            color: Colors.black.withOpacity(.25)),
-      ]),
+      decoration: BoxDecoration(
+        color: Colors.white,
+      ),
       child: Row(
         children: <Widget>[
           CircleAvatar(
@@ -87,7 +82,10 @@ class _CustomAppBarState extends State<CustomAppBar> {
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (!snapshot.hasData) {
-                return Container();
+                return DefaultButton(
+                  text: "Đăng nhập",
+                  press: () {},
+                );
               }
 
               int length = snapshot.data.documents.length;

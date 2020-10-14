@@ -15,13 +15,13 @@ class MenuItem extends StatelessWidget {
     return InkWell(
       onTap: press,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Text(
           title.toUpperCase(),
           style: TextStyle(
-              color: kTextColor.withOpacity(.65),
+              color: kTextColor.withOpacity(.75),
               fontWeight: FontWeight.bold,
-              fontSize: 14.6),
+              fontSize: 14.8),
         ),
       ),
     );
