@@ -2,8 +2,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
-import '../../style.dart';
-
 class CarouselImage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _CarouselImageState();
@@ -30,8 +28,8 @@ class _CarouselImageState extends State<CarouselImage> {
   void changePostion(int i) {
     setState(() {
       if (_current == 4 && i == 1) {
-        _current = 1;
-      } else if (_current == 1 && i == -1) {
+        _current = 0;
+      } else if (_current == 0 && i == -1) {
         _current = 4;
       } else {
         _current += i;
@@ -53,8 +51,8 @@ class _CarouselImageState extends State<CarouselImage> {
             enableInfiniteScroll: true,
             reverse: false,
             autoPlay: true,
-            autoPlayInterval: Duration(seconds: 4),
-            autoPlayAnimationDuration: Duration(milliseconds: 1400),
+            autoPlayInterval: Duration(seconds: 5),
+            autoPlayAnimationDuration: Duration(milliseconds: 1000),
             autoPlayCurve: Curves.fastOutSlowIn,
             enlargeCenterPage: true,
             scrollDirection: Axis.horizontal,
@@ -70,7 +68,7 @@ class _CarouselImageState extends State<CarouselImage> {
                 return Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(50.0),
+                      topRight: Radius.circular(60.0),
                     ),
                     image: DecorationImage(
                       image: NetworkImage(imgList[_current]),
@@ -83,9 +81,9 @@ class _CarouselImageState extends State<CarouselImage> {
           }).toList(),
         ),
         Positioned(
-          bottom: 16.0,
+          bottom: 80.0,
           child: Container(
-            width: size.width * .36,
+            width: size.width * .38,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: map<Widget>(imgList, (index, url) {
@@ -102,8 +100,8 @@ class _CarouselImageState extends State<CarouselImage> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(40.0)),
                       color: _current == index
-                          ? Colors.blueAccent.withOpacity(.85)
-                          : Colors.white,
+                          ? Colors.white
+                          : Colors.white.withOpacity(.9),
                     ),
                   ),
                 );
@@ -120,7 +118,7 @@ class _CarouselImageState extends State<CarouselImage> {
                 color: Colors.white,
                 icon: Icon(
                   Feather.arrow_left,
-                  size: 22.0,
+                  size: 25.0,
                 ),
                 onPressed: () {
                   changePostion(-1);
@@ -130,7 +128,7 @@ class _CarouselImageState extends State<CarouselImage> {
                 color: Colors.white,
                 icon: Icon(
                   Feather.arrow_right,
-                  size: 22.0,
+                  size: 25.0,
                 ),
                 onPressed: () {
                   changePostion(1);

@@ -30,15 +30,15 @@ class _ProductState extends State<Product> {
             return ListView.builder(
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
-              itemCount: 10,
+              itemCount: snapshot.data.documents.length,
               itemBuilder: (context, index) {
                 return ItemCard(
-                  title: snapshot.data.documents[0]['name'],
-                  image: snapshot.data.documents[0]['urlToImage'],
-                  price: snapshot.data.documents[0]['price'],
-                  type: snapshot.data.documents[0]['type'],
+                  title: snapshot.data.documents[index]['name'],
+                  image: snapshot.data.documents[index]['urlToImage'],
+                  price: snapshot.data.documents[index]['price'],
+                  type: snapshot.data.documents[index]['type'],
                   kind: widget.kind,
-                  description: snapshot.data.documents[0]['desc'],
+                  description: snapshot.data.documents[index]['desc'],
                 );
               },
             );

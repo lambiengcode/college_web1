@@ -1,6 +1,6 @@
 {
-    "name": "food_web",
-    "short_name": "food_web",
+    "name": "MyLife",
+    "short_name": "MyLife",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
@@ -10,12 +10,12 @@
     "prefer_related_applications": false,
     "icons": [
         {
-            "src": "icons/Icon-192.png",
+            "src": "images/logo.jpg",
             "sizes": "192x192",
             "type": "image/png"
         },
         {
-            "src": "icons/Icon-512.png",
+            "src": "images/logo.jpg",
             "sizes": "512x512",
             "type": "image/png"
         }

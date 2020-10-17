@@ -1,8 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
-import '../main.dart';
-import '../main.dart';
 import '../main.dart';
 import '../style.dart';
 
@@ -56,7 +53,7 @@ class ItemCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       child: Container(
-        height: 350,
+        height: 345,
         width: 380,
         child: Stack(
           children: <Widget>[
@@ -65,7 +62,7 @@ class ItemCard extends StatelessWidget {
               left: 36.0,
               top: 16.0,
               child: Container(
-                height: 330,
+                height: 325,
                 width: 260,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(30.0),
@@ -104,31 +101,17 @@ class ItemCard extends StatelessWidget {
             ),
             // Price
             Positioned(
-              left: 220,
-              top: 80,
+              left: 210.0,
+              top: 100.0,
               child: Text(
                 "$price đ",
                 style: TextStyle(
                   color: Colors.redAccent,
-                  fontSize: 18.0,
+                  fontSize: 20.0,
                   fontWeight: FontWeight.w400,
                 ),
               ),
             ),
-
-            Positioned(
-              left: 210,
-              top: 105,
-              child: Text(
-                type == 1 ? "(100 gram)" : "(quả)",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.w300,
-                ),
-              ),
-            ),
-
             Positioned(
                 left: 265,
                 top: 4,
@@ -243,7 +226,7 @@ class ItemCard extends StatelessWidget {
                       title,
                       style: Theme.of(context).textTheme.title,
                     ),
-                    SizedBox(height: 16),
+                    SizedBox(height: 12.0),
                     Text(
                       description,
                       maxLines: 3,
