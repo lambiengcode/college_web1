@@ -1,6 +1,6 @@
 # food_web
 
-A new Flutter project.
+Flutter web - project 1
 
 ## Getting Started
 
