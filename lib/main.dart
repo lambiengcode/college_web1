@@ -1,13 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_web_scrollbar/flutter_web_scrollbar.dart';
 import 'package:food_web/data.dart';
+import 'package:food_web/page/auth/auth_page.dart';
 import 'package:food_web/page/product.dart';
 import 'package:food_web/page/product_page.dart';
+import 'package:food_web/service/auth.dart';
 import 'package:food_web/style.dart';
+import 'package:food_web/widget/drawer.dart';
 import 'package:food_web/widget/home_widget/carousel_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'style.dart';
 
 void main() {
@@ -32,22 +37,30 @@ class MyApp extends StatelessWidget {
 
 class HomePage extends StatefulWidget {
   static String uid = '';
+
   @override
   State<StatefulWidget> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int kind = 1;
   ScrollController _controller;
   final aboutKey = new GlobalKey();
   final productKey = new GlobalKey();
   final blogKey = new GlobalKey();
 
+  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  Future<String> uid;
+
   @override
   void initState() {
     //Initialize the  scrollController
     _controller = ScrollController();
     super.initState();
+    uid = _prefs.then((SharedPreferences prefs) {
+      return prefs.getString('uid') != null ? prefs.getString('uid') : '';
+    });
   }
 
   void scrollCallBack(DragUpdateDetails dragUpdate) {
@@ -57,11 +70,40 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void _openEndDrawer() {
+    _scaffoldKey.currentState.openEndDrawer();
+  }
+
   @override
   Widget build(BuildContext context) {
     final _height = MediaQuery.of(context).size.height;
     final _width = MediaQuery.of(context).size.width;
     return Scaffold(
+      key: _scaffoldKey,
+      endDrawer: Container(
+        width: _width * .24,
+        child: Drawer(
+          child: FutureBuilder(
+            future: uid,
+            builder: (context, snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.waiting:
+                  return Container();
+                default:
+                  if (snapshot.hasError) {
+                    return Container();
+                  }
+
+                  return DrawerLayout(
+                    uid: snapshot.data,
+                  );
+              }
+            },
+          ),
+        ),
+      ),
+      // Disable opening the end drawer with a swipe gesture.
+      endDrawerEnableOpenDragGesture: false,
       backgroundColor: Color(0xc0c0c0),
       appBar: AppBar(
         toolbarHeight: 100.0,
@@ -155,26 +197,149 @@ class _HomePageState extends State<HomePage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      child: IntrinsicHeight(
-                        child: Row(
-                          children: [
-                            Text(
-                              "Login",
-                              style: kAppBarStyle,
-                            ),
-                            VerticalDivider(
-                              width: 24.0,
-                              thickness: 2.0,
-                              color: Colors.blueGrey.shade400,
-                            ),
-                            Text(
-                              "SignUp",
-                              style: kAppBarStyle,
-                            )
-                          ],
-                        ),
-                      ),
+                    FutureBuilder<String>(
+                      future: uid,
+                      builder: (BuildContext context,
+                          AsyncSnapshot<String> snapshot) {
+                        switch (snapshot.connectionState) {
+                          case ConnectionState.waiting:
+                            return Container();
+                          default:
+                            if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            } else {
+                              return snapshot.data != ''
+                                  ? StreamBuilder(
+                                      stream: Firestore.instance
+                                          .collection('users')
+                                          .where('id', isEqualTo: snapshot.data)
+                                          .snapshots(),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot<QuerySnapshot> snap) {
+                                        if (!snap.hasData) {
+                                          return Container();
+                                        }
+
+                                        return Container(
+                                          child: IntrinsicHeight(
+                                            child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    _openEndDrawer();
+                                                  },
+                                                  child: CircleAvatar(
+                                                    radius: 18.0,
+                                                    backgroundColor:
+                                                        Colors.blueAccent,
+                                                    child: CircleAvatar(
+                                                      radius: 16.0,
+                                                      backgroundImage:
+                                                          NetworkImage(
+                                                        snap.data.documents[0]
+                                                            ['image'],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                VerticalDivider(
+                                                  width: 24.0,
+                                                  thickness: 2.0,
+                                                  color:
+                                                      Colors.blueGrey.shade400,
+                                                ),
+                                                GestureDetector(
+                                                  onTap: () async {
+                                                    AuthService _auth =
+                                                        AuthService();
+                                                    await _auth.signOut();
+                                                    final SharedPreferences
+                                                        prefs = await _prefs;
+                                                    Future<String> _logout =
+                                                        prefs
+                                                            .setString(
+                                                                'uid', '')
+                                                            .then(
+                                                                (bool success) {
+                                                      return 'Log out success';
+                                                    });
+                                                    print('Log out');
+                                                    Navigator.of(context)
+                                                        .pushReplacement(
+                                                            MaterialPageRoute(
+                                                                builder: (BuildContext
+                                                                        context) =>
+                                                                    HomePage()));
+                                                  },
+                                                  child: Text(
+                                                    'Logout',
+                                                    style: GoogleFonts.overpass(
+                                                      color:
+                                                          Colors.grey.shade800,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 18.0,
+                                                      decorationStyle:
+                                                          TextDecorationStyle
+                                                              .solid,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      })
+                                  : Container(
+                                      child: IntrinsicHeight(
+                                        child: Row(
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () {
+                                                Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        AuthenticatePage(
+                                                      start: true,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                              child: Text(
+                                                "Login",
+                                                style: kAppBarStyle,
+                                              ),
+                                            ),
+                                            VerticalDivider(
+                                              width: 24.0,
+                                              thickness: 2.0,
+                                              color: Colors.blueGrey.shade400,
+                                            ),
+                                            GestureDetector(
+                                              onTap: () {
+                                                Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        AuthenticatePage(
+                                                      start: false,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                              child: Text(
+                                                "SignUp",
+                                                style: kAppBarStyle,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                            }
+                        }
+                      },
                     ),
                     Container(
                       child: IntrinsicHeight(
