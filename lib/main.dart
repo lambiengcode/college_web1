@@ -59,6 +59,7 @@ class _HomePageState extends State<HomePage> {
     _controller = ScrollController();
     super.initState();
     uid = _prefs.then((SharedPreferences prefs) {
+      _openEndDrawer();
       return prefs.getString('uid') != null ? prefs.getString('uid') : '';
     });
   }
@@ -81,7 +82,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       key: _scaffoldKey,
       endDrawer: Container(
-        width: _width * .24,
+        width: _width * .22,
         child: Drawer(
           child: FutureBuilder(
             future: uid,
@@ -345,18 +346,26 @@ class _HomePageState extends State<HomePage> {
                       child: IntrinsicHeight(
                         child: Row(
                           children: [
-                            Icon(
-                              Feather.search,
-                              color: kPrimaryColor,
-                              size: 24.0,
+                            IconButton(
+                              icon: Icon(
+                                Feather.search,
+                                color: kPrimaryColor,
+                                size: 24.0,
+                              ),
+                              onPressed: () {},
                             ),
                             SizedBox(
-                              width: 30,
+                              width: 12.0,
                             ),
-                            Icon(
-                              Feather.shopping_cart,
-                              color: kPrimaryColor,
-                              size: 24.0,
+                            IconButton(
+                              icon: Icon(
+                                Feather.shopping_cart,
+                                color: kPrimaryColor,
+                                size: 24.0,
+                              ),
+                              onPressed: () {
+                                _openEndDrawer();
+                              },
                             ),
                           ],
                         ),

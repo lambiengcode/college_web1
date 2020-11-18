@@ -1,8 +1,11 @@
-import 'dart:html';
+import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:food_web/animation/fade_animation.dart';
+import 'package:food_web/widget/cart_widget/bottom_bar.dart';
+import 'package:food_web/widget/cart_widget/item_cart.dart';
 
 class DrawerLayout extends StatefulWidget {
   final String uid;
@@ -37,14 +40,32 @@ class _DrawerLayoutState extends State<DrawerLayout> {
 
               return UserAccountsDrawerHeader(
                 accountName: Text(
-                  snapshot.data.documents[0]['username'],
+                  snapshot.data.docs[0]['username'],
                   style: TextStyle(
                       color: Colors.white, fontWeight: FontWeight.w600),
                 ),
                 accountEmail: Text(
-                  snapshot.data.documents[0]['email'],
+                  snapshot.data.docs[0]['email'],
                   style: TextStyle(color: Colors.white),
                 ),
+                otherAccountsPictures: <Widget>[
+                  GestureDetector(
+                    onTap: () {},
+                    child: Container(
+                      height: 60.0,
+                      width: 60.0,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.black.withOpacity(.2),
+                      ),
+                      child: Icon(
+                        Feather.user,
+                        size: 16.5,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
                 currentAccountPicture: GestureDetector(
                   child: Container(
                     height: size.width / 7,
@@ -52,10 +73,9 @@ class _DrawerLayoutState extends State<DrawerLayout> {
                     decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         image: DecorationImage(
-                          image: snapshot.data.documents[0]['image'] == ''
+                          image: snapshot.data.docs[0]['image'] == ''
                               ? AssetImage('images/myimage.jpg')
-                              : NetworkImage(
-                                  snapshot.data.documents[0]['image']),
+                              : NetworkImage(snapshot.data.docs[0]['image']),
                           fit: BoxFit.cover,
                         ),
                         border:
@@ -88,29 +108,70 @@ class _DrawerLayoutState extends State<DrawerLayout> {
                   stream: Firestore.instance
                       .collection('carts')
                       .where('orders',
-                          isEqualTo: snapshot.data.documents[0]['orders'])
+                          isEqualTo: snapshot.data.docs[0]['orders'])
                       .snapshots(),
                   builder: (context, AsyncSnapshot<QuerySnapshot> snapCarts) {
                     if (!snapCarts.hasData) {
                       return Container();
                     }
 
-                    return snapCarts.data.documents.length == 0
+                    return snapCarts.data.docs.length == 0
                         ? Container(
                             child: Center(
                               child: Text('Empty Carts'),
                             ),
                           )
-                        : Container(
-                            child: Center(
-                                child: Text(snapCarts.data.documents.length
-                                    .toString())),
+                        : ListView.builder(
+                            itemCount: snapCarts.data.docs.length,
+                            itemBuilder: (context, index) {
+                              return ItemCart(
+                                info: snapCarts.data.docs[index],
+                              );
+                            },
                           );
                   },
                 );
               },
             ),
           ),
+        ),
+        StreamBuilder(
+          stream: Firestore.instance
+              .collection('users')
+              .where('id', isEqualTo: widget.uid)
+              .snapshots(),
+          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (!snapshot.hasData) {
+              return Container();
+            }
+
+            return StreamBuilder(
+              stream: Firestore.instance
+                  .collection('carts')
+                  .where('orders', isEqualTo: snapshot.data.docs[0]['orders'])
+                  .snapshots(),
+              builder: (context, AsyncSnapshot<QuerySnapshot> snapCarts) {
+                if (!snapCarts.hasData) {
+                  return Container(
+                    height: 72.0,
+                    color: Colors.blueAccent,
+                  );
+                }
+
+                int sumOfAll = 0;
+
+                for (int i = 0; i < snapCarts.data.docs.length; i++) {
+                  int temp = int.parse(snapCarts.data.docs[i]['price']) *
+                      snapCarts.data.docs[i]['quantity'];
+                  sumOfAll += temp;
+                }
+
+                return BottomBarCart(
+                  money: sumOfAll,
+                );
+              },
+            );
+          },
         ),
       ],
     );
