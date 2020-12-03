@@ -13,7 +13,6 @@ class _BottomBarCartState extends State<BottomBarCart> {
     String result = '';
     int count = 0;
     for (int i = money.length - 1; i >= 0; i--) {
-      print(count);
       if (count == 3) {
         count = 1;
         result += '.';

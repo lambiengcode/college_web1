@@ -207,6 +207,38 @@ class _ItemCartState extends State<ItemCart> {
                     ),
                   ],
                 ),
+                SizedBox(
+                  height: 12.0,
+                ),
+                widget.info['kind'] == 3
+                    ? Container(
+                        height: 48.0,
+                        child: TextField(
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey.shade600,
+                          ),
+                          decoration: InputDecoration(
+                              hintText: 'Note',
+                              hintStyle: TextStyle(
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.grey,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(
+                                  8.0,
+                                ),
+                                borderSide: BorderSide(
+                                  color: Colors.blueAccent,
+                                  width: 1.2,
+                                ),
+                              )),
+                        ),
+                      )
+                    : Container(),
               ],
             ),
           ),

@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:food_web/animation/fade_animation.dart';
+import 'package:food_web/page/profile_page.dart';
 import 'package:food_web/widget/cart_widget/bottom_bar.dart';
 import 'package:food_web/widget/cart_widget/item_cart.dart';
 
@@ -18,7 +19,6 @@ class _DrawerLayoutState extends State<DrawerLayout> {
   @override
   void initState() {
     super.initState();
-    print(widget.uid);
   }
 
   @override
@@ -50,7 +50,15 @@ class _DrawerLayoutState extends State<DrawerLayout> {
                 ),
                 otherAccountsPictures: <Widget>[
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => ProfilePage(
+                            uid: widget.uid,
+                          ),
+                        ),
+                      );
+                    },
                     child: Container(
                       height: 60.0,
                       width: 60.0,

@@ -642,16 +642,16 @@ class _HomePageState extends State<HomePage> {
                                         Row(
                                           children: [
                                             Text(
-                                              "Get Started  ",
+                                              "Comming Soon  ",
                                               style: GoogleFonts.hind(
-                                                fontSize: 22,
+                                                fontSize: 20.0,
                                                 color: purpleColor,
                                                 fontWeight: FontWeight.w700,
                                               ),
                                             ),
                                             SizedBox(width: 5),
                                             Icon(
-                                              Icons.arrow_forward,
+                                              Icons.star_border_purple500_sharp,
                                               color: purpleColor,
                                             ),
                                           ],
