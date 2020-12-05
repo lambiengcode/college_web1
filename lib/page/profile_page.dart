@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:food_web/widget/history_widget/item_history.dart';
 
 class ProfilePage extends StatefulWidget {
   final String uid;
@@ -10,10 +11,77 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  String ordersID = '';
+
+  void _openEndDrawer() {
+    _scaffoldKey.currentState.openEndDrawer();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      key: _scaffoldKey,
+      endDrawer: Container(
+          width: size.width * .22,
+          child: Drawer(
+            child: Column(
+              children: [
+                Expanded(
+                  child: StreamBuilder(
+                    stream: Firestore.instance
+                        .collection('carts')
+                        .where('orders', isEqualTo: ordersID)
+                        .snapshots(),
+                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (!snapshot.hasData) {
+                        return Container();
+                      }
+
+                      return ListView.builder(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 20.0,
+                        ),
+                        itemCount: snapshot.data.docs.length,
+                        itemBuilder: (context, index) {
+                          return ItemHistory(
+                            info: snapshot.data.docs[index],
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+                StreamBuilder(
+                  stream: Firestore.instance
+                      .collection('carts')
+                      .where('orders', isEqualTo: ordersID)
+                      .snapshots(),
+                  builder: (context, AsyncSnapshot<QuerySnapshot> snapCarts) {
+                    if (!snapCarts.hasData) {
+                      return Container(
+                        height: 72.0,
+                        color: Colors.blueAccent,
+                      );
+                    }
+
+                    int sumOfAll = 0;
+
+                    for (int i = 0; i < snapCarts.data.docs.length; i++) {
+                      int temp = int.parse(snapCarts.data.docs[i]['price']) *
+                          snapCarts.data.docs[i]['quantity'];
+                      sumOfAll += temp;
+                    }
+
+                    return Container();
+                  },
+                )
+              ],
+            ),
+          )),
+      // Disable opening the end drawer with a swipe gesture.
+      endDrawerEnableOpenDragGesture: false,
       body: Container(
         height: size.height,
         width: size.width,
@@ -294,7 +362,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    height: 100.0,
+                    height: 60.0,
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(
@@ -303,7 +371,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Text(
                       'History',
                       style: TextStyle(
-                        fontSize: 36.0,
+                        fontSize: 30.0,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                       ),
@@ -328,7 +396,56 @@ class _ProfilePageState extends State<ProfilePage> {
                           return ListView.builder(
                             itemCount: snapshot.data.docs.length,
                             itemBuilder: (context, index) {
-                              return Container();
+                              return GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    ordersID =
+                                        snapshot.data.docs[index]['orders'];
+                                  });
+                                  _openEndDrawer();
+                                },
+                                child: Container(
+                                  width: 200.0,
+                                  height: 54.0,
+                                  alignment: Alignment.centerLeft,
+                                  padding: EdgeInsets.only(
+                                    left: 24.0,
+                                    right: 24.0,
+                                  ),
+                                  margin: EdgeInsets.only(
+                                    top: 12.0,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.blueAccent,
+                                      width: 1.2,
+                                    ),
+                                    borderRadius: BorderRadius.circular(
+                                      8.0,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'id: ' +
+                                            snapshot.data.docs[index]['orders'],
+                                        style: TextStyle(
+                                          color: Colors.blueAccent,
+                                          fontSize: 15.0,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      Icon(
+                                        Feather.arrow_right,
+                                        color: Colors.blueAccent,
+                                        size: 18.0,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
                             },
                           );
                         },

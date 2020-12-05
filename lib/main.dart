@@ -135,10 +135,11 @@ class _HomePageState extends State<HomePage> {
                     Text(
                       "MyLife",
                       style: TextStyle(
-                          color: Colors.black.withOpacity(.85),
-                          fontSize: 23.5,
-                          fontWeight: FontWeight.bold,
-                          fontStyle: FontStyle.italic),
+                        color: Colors.black.withOpacity(.85),
+                        fontSize: 23.5,
+                        fontWeight: FontWeight.bold,
+                        fontStyle: FontStyle.italic,
+                      ),
                     ),
                   ],
                 ),

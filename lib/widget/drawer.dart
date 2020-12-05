@@ -176,6 +176,9 @@ class _DrawerLayoutState extends State<DrawerLayout> {
 
                 return BottomBarCart(
                   money: sumOfAll,
+                  index: snapshot.data.docs[0].reference,
+                  orders: snapshot.data.docs[0]['orders'],
+                  uid: widget.uid,
                 );
               },
             );

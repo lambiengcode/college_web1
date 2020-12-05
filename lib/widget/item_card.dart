@@ -32,6 +32,25 @@ class _ItemCardState extends State<ItemCard> {
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   Future<String> uid;
 
+  moneyToString(String money) {
+    String result = '';
+    int count = 0;
+    for (int i = money.length - 1; i >= 0; i--) {
+      if (count == 3) {
+        count = 1;
+        result += '.';
+      } else {
+        count++;
+      }
+      result += money[i];
+    }
+    String need = '';
+    for (int i = result.length - 1; i >= 0; i--) {
+      need += result[i];
+    }
+    return need;
+  }
+
   Future<void> _updateRoom(orders, index) async {
     Firestore.instance.runTransaction((Transaction transaction) async {
       DocumentSnapshot snapshot = await transaction.get(index);
@@ -131,7 +150,7 @@ class _ItemCardState extends State<ItemCard> {
                       left: 210.0,
                       top: 100.0,
                       child: Text(
-                        "${widget.price}đ",
+                        moneyToString(widget.price.toString()) + "đ",
                         style: TextStyle(
                           color: Colors.redAccent,
                           fontSize: 20.0,
