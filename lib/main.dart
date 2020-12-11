@@ -349,17 +349,6 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             IconButton(
                               icon: Icon(
-                                Feather.search,
-                                color: kPrimaryColor,
-                                size: 24.0,
-                              ),
-                              onPressed: () {},
-                            ),
-                            SizedBox(
-                              width: 12.0,
-                            ),
-                            IconButton(
-                              icon: Icon(
                                 Feather.shopping_cart,
                                 color: kPrimaryColor,
                                 size: 24.0,

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:food_web/page/auth/auth_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../style.dart';
 
@@ -161,75 +162,104 @@ class _ItemCardState extends State<ItemCard> {
                     Positioned(
                         left: 265,
                         top: 4,
-                        child: StreamBuilder(
-                          stream: Firestore.instance
-                              .collection('users')
-                              .where('id', isEqualTo: snap.data)
-                              .snapshots(),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<QuerySnapshot> snapshot) {
-                            if (!snapshot.hasData) {
-                              return Container();
-                            }
-
-                            return StreamBuilder(
-                              stream: Firestore.instance
-                                  .collection('carts')
-                                  .where('orders',
-                                      isEqualTo: snapshot.data.docs[0]
-                                          ['orders'])
-                                  .where('name', isEqualTo: widget.title)
-                                  .snapshots(),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<QuerySnapshot> snapshot1) {
-                                if (!snapshot1.hasData) {
-                                  return Container();
-                                }
-
-                                int length1 = snapshot1.data.docs.length;
-
-                                return GestureDetector(
-                                  onTap: () async {
-                                    if (length1 == 0) {
-                                      if (snapshot.data.docs[0]['orders'] ==
-                                          '') {
-                                        String orders = snap.data +
-                                            DateTime.now()
-                                                .microsecondsSinceEpoch
-                                                .toString();
-                                        await _updateRoom(
-                                          orders,
-                                          snapshot.data.documents[0].reference,
-                                        );
-                                        await _addToCart(orders);
-                                      } else {
-                                        await _addToCart(
-                                          snapshot.data.docs[0]['orders'],
-                                        );
-                                      }
-                                    } else {
-                                      print('already');
-                                    }
-                                  },
-                                  child: Container(
-                                    height: 48.0,
-                                    width: 48.0,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: kPrimaryColor,
+                        child: snap.data == '' || snap.data == null
+                            ? GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => AuthenticatePage(
+                                        start: true,
+                                      ),
                                     ),
-                                    child: Icon(
-                                      Icons.add,
-                                      color: Colors.white,
-                                      size: 24.0,
-                                    ),
-                                    alignment: Alignment.center,
+                                  );
+                                },
+                                child: Container(
+                                  height: 48.0,
+                                  width: 48.0,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: kPrimaryColor,
                                   ),
-                                );
-                              },
-                            );
-                          },
-                        )),
+                                  child: Icon(
+                                    Icons.add,
+                                    color: Colors.white,
+                                    size: 24.0,
+                                  ),
+                                  alignment: Alignment.center,
+                                ),
+                              )
+                            : StreamBuilder(
+                                stream: Firestore.instance
+                                    .collection('users')
+                                    .where('id', isEqualTo: snap.data)
+                                    .snapshots(),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return Container();
+                                  }
+
+                                  return StreamBuilder(
+                                    stream: Firestore.instance
+                                        .collection('carts')
+                                        .where('orders',
+                                            isEqualTo: snapshot.data.docs[0]
+                                                ['orders'])
+                                        .where('name', isEqualTo: widget.title)
+                                        .snapshots(),
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot<QuerySnapshot>
+                                            snapshot1) {
+                                      if (!snapshot1.hasData) {
+                                        return Container();
+                                      }
+
+                                      int length1 = snapshot1.data.docs.length;
+
+                                      return GestureDetector(
+                                        onTap: () async {
+                                          if (length1 == 0) {
+                                            if (snapshot.data.docs[0]
+                                                    ['orders'] ==
+                                                '') {
+                                              String orders = snap.data +
+                                                  DateTime.now()
+                                                      .microsecondsSinceEpoch
+                                                      .toString();
+                                              await _updateRoom(
+                                                orders,
+                                                snapshot.data.documents[0]
+                                                    .reference,
+                                              );
+                                              await _addToCart(orders);
+                                            } else {
+                                              await _addToCart(
+                                                snapshot.data.docs[0]['orders'],
+                                              );
+                                            }
+                                          } else {
+                                            print('already');
+                                          }
+                                        },
+                                        child: Container(
+                                          height: 48.0,
+                                          width: 48.0,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: kPrimaryColor,
+                                          ),
+                                          child: Icon(
+                                            Icons.add,
+                                            color: Colors.white,
+                                            size: 24.0,
+                                          ),
+                                          alignment: Alignment.center,
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              )),
 
                     Positioned(
                       top: 210.0,

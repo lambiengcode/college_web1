@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:food_web/style.dart';
+import 'package:food_web/widget/drawer.dart';
 import 'package:food_web/widget/item_card.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductPage extends StatefulWidget {
   final int kind;
@@ -16,12 +18,23 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  Future<String> uid;
   int kind = 1;
 
   @override
   void initState() {
     super.initState();
     kind = widget.kind;
+    uid = _prefs.then((SharedPreferences prefs) {
+      _openEndDrawer();
+      return prefs.getString('uid') != null ? prefs.getString('uid') : '';
+    });
+  }
+
+  void _openEndDrawer() {
+    _scaffoldKey.currentState.openEndDrawer();
   }
 
   @override
@@ -30,6 +43,30 @@ class _ProductPageState extends State<ProductPage> {
     final _width = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      endDrawer: Container(
+        width: _width * .22,
+        child: Drawer(
+          child: FutureBuilder(
+            future: uid,
+            builder: (context, snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.waiting:
+                  return Container();
+                default:
+                  if (snapshot.hasError) {
+                    return Container();
+                  }
+
+                  return DrawerLayout(
+                    uid: snapshot.data,
+                  );
+              }
+            },
+          ),
+        ),
+      ),
+      // Disable opening the end drawer with a swipe gesture.
+      endDrawerEnableOpenDragGesture: false,
       body: Container(
         child: Column(
           children: [
@@ -223,46 +260,24 @@ class _ProductPageState extends State<ProductPage> {
                     ),
                   ),
                   Spacer(),
-                  Container(
-                    height: 48.0,
-                    width: 140.0,
-                    decoration: BoxDecoration(
-                      color: purpleColor,
-                      borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                  GestureDetector(
+                    onTap: () {
+                      _openEndDrawer();
+                    },
+                    child: Container(
+                      height: 52.0,
+                      width: 52.0,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: purpleColor,
+                      ),
+                      child: Icon(
+                        Feather.shopping_cart,
+                        color: Colors.white,
+                        size: 18.0,
+                      ),
+                      alignment: Alignment.center,
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: Container(
-                            child: Icon(
-                              Feather.search,
-                              color: Colors.white,
-                              size: 22.0,
-                            ),
-                            alignment: Alignment.center,
-                          ),
-                        ),
-                        VerticalDivider(
-                          color: Colors.white,
-                          thickness: 2.0,
-                          width: 2.0,
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: Container(
-                            child: Icon(
-                              Feather.shopping_cart,
-                              color: Colors.white,
-                              size: 22.0,
-                            ),
-                            alignment: Alignment.center,
-                          ),
-                        ),
-                      ],
-                    ),
-                    alignment: Alignment.center,
                   ),
                 ],
               ),
@@ -286,7 +301,7 @@ class _ProductPageState extends State<ProductPage> {
                       padding: EdgeInsets.fromLTRB(60.0, 40.0, 24.0, 24.0),
                       gridDelegate:
                           new SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: (_width / 360).round(),
+                        crossAxisCount: (_width / 380).round(),
                       ),
                       itemCount: snapshot.data.documents.length,
                       itemBuilder: (context, index) {
