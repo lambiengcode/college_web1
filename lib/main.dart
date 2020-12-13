@@ -132,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     SizedBox(width: 12.0),
                     Text(
-                      "MyLife",
+                      "MyLifee",
                       style: TextStyle(
                         color: Colors.black.withOpacity(.85),
                         fontSize: 23.5,
