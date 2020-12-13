@@ -47,6 +47,14 @@ class _ItemCartState extends State<ItemCart> {
     });
   }
 
+  Future<void> _updateNote(String value) async {
+    Firestore.instance.runTransaction((Transaction transaction) async {
+      await transaction.update(widget.info.reference, {
+        'note': value,
+      });
+    });
+  }
+
   Future<void> _delete() async {
     Firestore.instance.runTransaction((Transaction transaction) async {
       await transaction.delete(widget.info.reference);
@@ -213,13 +221,15 @@ class _ItemCartState extends State<ItemCart> {
                 widget.info['kind'] == 3
                     ? Container(
                         height: 48.0,
-                        child: TextField(
+                        child: TextFormField(
                           maxLines: 1,
                           style: TextStyle(
                             fontSize: 14.0,
                             fontWeight: FontWeight.w600,
                             color: Colors.grey.shade600,
                           ),
+                          onFieldSubmitted: (val) => _updateNote(val),
+                          initialValue: widget.info['note'],
                           decoration: InputDecoration(
                               hintText: 'Note',
                               hintStyle: TextStyle(

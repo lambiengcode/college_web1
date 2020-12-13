@@ -59,7 +59,6 @@ class _HomePageState extends State<HomePage> {
     _controller = ScrollController();
     super.initState();
     uid = _prefs.then((SharedPreferences prefs) {
-      _openEndDrawer();
       return prefs.getString('uid') != null ? prefs.getString('uid') : '';
     });
   }
@@ -347,14 +346,39 @@ class _HomePageState extends State<HomePage> {
                       child: IntrinsicHeight(
                         child: Row(
                           children: [
-                            IconButton(
-                              icon: Icon(
-                                Feather.shopping_cart,
-                                color: kPrimaryColor,
-                                size: 24.0,
-                              ),
-                              onPressed: () {
-                                _openEndDrawer();
+                            FutureBuilder(
+                              future: uid,
+                              builder: (context, snapshot) {
+                                switch (snapshot.connectionState) {
+                                  case ConnectionState.waiting:
+                                    return Container();
+                                  default:
+                                    if (snapshot.hasError) {
+                                      return Container();
+                                    }
+
+                                    return IconButton(
+                                      icon: Icon(
+                                        Feather.shopping_cart,
+                                        color: kPrimaryColor,
+                                        size: 24.0,
+                                      ),
+                                      onPressed: () {
+                                        if (snapshot.data == '') {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  AuthenticatePage(
+                                                start: true,
+                                              ),
+                                            ),
+                                          );
+                                        } else {
+                                          _openEndDrawer();
+                                        }
+                                      },
+                                    );
+                                }
                               },
                             ),
                           ],

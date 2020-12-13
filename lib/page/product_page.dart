@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:food_web/page/auth/auth_page.dart';
 import 'package:food_web/style.dart';
 import 'package:food_web/widget/drawer.dart';
 import 'package:food_web/widget/item_card.dart';
@@ -28,7 +29,6 @@ class _ProductPageState extends State<ProductPage> {
     super.initState();
     kind = widget.kind;
     uid = _prefs.then((SharedPreferences prefs) {
-      _openEndDrawer();
       return prefs.getString('uid') != null ? prefs.getString('uid') : '';
     });
   }
@@ -43,6 +43,7 @@ class _ProductPageState extends State<ProductPage> {
     final _width = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      key: _scaffoldKey,
       endDrawer: Container(
         width: _width * .22,
         child: Drawer(
@@ -260,24 +261,48 @@ class _ProductPageState extends State<ProductPage> {
                     ),
                   ),
                   Spacer(),
-                  GestureDetector(
-                    onTap: () {
-                      _openEndDrawer();
+                  FutureBuilder(
+                    future: uid,
+                    builder: (context, snapshot) {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.waiting:
+                          return Container();
+                        default:
+                          if (snapshot.hasError) {
+                            return Container();
+                          }
+
+                          return GestureDetector(
+                            onTap: () {
+                              if (snapshot.data == '') {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => AuthenticatePage(
+                                      start: true,
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                _openEndDrawer();
+                              }
+                            },
+                            child: Container(
+                              height: 52.0,
+                              width: 52.0,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: purpleColor,
+                              ),
+                              child: Icon(
+                                Feather.shopping_cart,
+                                color: Colors.white,
+                                size: 18.0,
+                              ),
+                              alignment: Alignment.center,
+                            ),
+                          );
+                      }
                     },
-                    child: Container(
-                      height: 52.0,
-                      width: 52.0,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: purpleColor,
-                      ),
-                      child: Icon(
-                        Feather.shopping_cart,
-                        color: Colors.white,
-                        size: 18.0,
-                      ),
-                      alignment: Alignment.center,
-                    ),
                   ),
                 ],
               ),

@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:food_web/page/auth/auth_page.dart';
+import 'package:food_web/style.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../style.dart';
 
 class ItemCard extends StatefulWidget {
   final String title;

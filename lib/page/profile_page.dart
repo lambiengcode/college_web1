@@ -502,6 +502,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         stream: Firestore.instance
                             .collection('orders')
                             .where('id', isEqualTo: widget.uid)
+                            .orderBy('publishAt', descending: true)
                             .snapshots(),
                         builder:
                             (context, AsyncSnapshot<QuerySnapshot> snapshot) {
