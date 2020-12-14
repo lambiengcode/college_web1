@@ -40,13 +40,13 @@ class _ItemSearchState extends State<ItemSearch> {
         children: [
           Container(
             margin: EdgeInsets.fromLTRB(
-              12.0,
+              20.0,
               14.0,
               24.0,
               6.0,
             ),
             padding: EdgeInsets.fromLTRB(
-              12.0,
+              20.0,
               24.0,
               8.0,
               24.0,
@@ -155,7 +155,7 @@ class _ItemSearchState extends State<ItemSearch> {
 
                       return StreamBuilder(
                         stream: Firestore.instance
-                            .collection('orders')
+                            .collection('carts')
                             .where('orders',
                                 isEqualTo: snapshot.data.docs[0]['orders'])
                             .where('name', isEqualTo: widget.info['name'])
@@ -180,7 +180,6 @@ class _ItemSearchState extends State<ItemSearch> {
 
                           return GestureDetector(
                             onTap: () async {
-                              print(snapshot.data.docs[0]['orders']);
                               if (snaps.data.docs.length == 0) {
                                 await _addToCart(
                                     snapshot.data.docs[0]['orders']);
