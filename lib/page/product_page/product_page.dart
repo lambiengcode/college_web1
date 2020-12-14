@@ -6,6 +6,7 @@ import 'package:food_web/page/auth/auth_page.dart';
 import 'package:food_web/style.dart';
 import 'package:food_web/widget/cart_widget/cart_drawer.dart';
 import 'package:food_web/widget/item_card.dart';
+import 'package:food_web/widget/search_widget/search_drawer.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,6 +24,8 @@ class _ProductPageState extends State<ProductPage> {
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   Future<String> uid;
   int kind = 1;
+
+  bool _search = false;
 
   @override
   void initState() {
@@ -47,23 +50,25 @@ class _ProductPageState extends State<ProductPage> {
       endDrawer: Container(
         width: _width * .22,
         child: Drawer(
-          child: FutureBuilder(
-            future: uid,
-            builder: (context, snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.waiting:
-                  return Container();
-                default:
-                  if (snapshot.hasError) {
-                    return Container();
-                  }
+          child: _search == false
+              ? FutureBuilder(
+                  future: uid,
+                  builder: (context, snapshot) {
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.waiting:
+                        return Container();
+                      default:
+                        if (snapshot.hasError) {
+                          return Container();
+                        }
 
-                  return DrawerLayout(
-                    uid: snapshot.data,
-                  );
-              }
-            },
-          ),
+                        return DrawerLayout(
+                          uid: snapshot.data,
+                        );
+                    }
+                  },
+                )
+              : SearchDrawer(),
         ),
       ),
       // Disable opening the end drawer with a swipe gesture.
@@ -261,48 +266,87 @@ class _ProductPageState extends State<ProductPage> {
                     ),
                   ),
                   Spacer(),
-                  FutureBuilder(
-                    future: uid,
-                    builder: (context, snapshot) {
-                      switch (snapshot.connectionState) {
-                        case ConnectionState.waiting:
-                          return Container();
-                        default:
-                          if (snapshot.hasError) {
-                            return Container();
-                          }
-
-                          return GestureDetector(
+                  Container(
+                    height: 48.0,
+                    width: 140.0,
+                    decoration: BoxDecoration(
+                      color: purpleColor,
+                      borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: GestureDetector(
                             onTap: () {
-                              if (snapshot.data == '') {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => AuthenticatePage(
-                                      start: true,
-                                    ),
-                                  ),
-                                );
-                              } else {
-                                _openEndDrawer();
-                              }
+                              setState(() {
+                                _search = true;
+                              });
+                              _openEndDrawer();
                             },
                             child: Container(
-                              height: 52.0,
-                              width: 52.0,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: purpleColor,
-                              ),
                               child: Icon(
-                                Feather.shopping_cart,
+                                Feather.search,
                                 color: Colors.white,
-                                size: 18.0,
+                                size: 22.0,
                               ),
                               alignment: Alignment.center,
                             ),
-                          );
-                      }
-                    },
+                          ),
+                        ),
+                        VerticalDivider(
+                          color: Colors.white,
+                          thickness: 2.0,
+                          width: 2.0,
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: FutureBuilder(
+                            future: uid,
+                            builder: (context, snapshot) {
+                              switch (snapshot.connectionState) {
+                                case ConnectionState.waiting:
+                                  return Container();
+                                default:
+                                  if (snapshot.hasError) {
+                                    return Container();
+                                  }
+
+                                  return GestureDetector(
+                                    onTap: () {
+                                      if (snapshot.data == '') {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                AuthenticatePage(
+                                              start: true,
+                                            ),
+                                          ),
+                                        );
+                                      } else {
+                                        setState(() {
+                                          _search = false;
+                                        });
+                                        _openEndDrawer();
+                                      }
+                                    },
+                                    child: Container(
+                                      child: Icon(
+                                        Feather.shopping_cart,
+                                        color: Colors.white,
+                                        size: 22.0,
+                                      ),
+                                      alignment: Alignment.center,
+                                    ),
+                                  );
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    alignment: Alignment.center,
                   ),
                 ],
               ),

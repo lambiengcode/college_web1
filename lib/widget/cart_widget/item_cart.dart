@@ -64,11 +64,18 @@ class _ItemCartState extends State<ItemCart> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(
-        horizontal: 8.0,
-        vertical: 4.0,
+      margin: EdgeInsets.fromLTRB(
+        24.0,
+        8.0,
+        8.0,
+        8.0,
       ),
-      padding: EdgeInsets.fromLTRB(16.0, 12.0, 10.0, 12.0),
+      padding: EdgeInsets.fromLTRB(
+        16.0,
+        16.0,
+        10.0,
+        16.0,
+      ),
       decoration: BoxDecoration(
         border: Border.all(
           color: Colors.blueAccent,
