@@ -43,6 +43,7 @@ dependencies:
   flutter_web_scrollbar: ^0.0.2
   cloud_firestore: ^0.14.3
   shared_preferences: ^0.5.12+4
+  tiengviet: ^0.4.1
 
 
 dev_dependencies:

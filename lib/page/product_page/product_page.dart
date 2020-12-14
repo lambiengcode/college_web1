@@ -4,7 +4,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:food_web/page/auth/auth_page.dart';
 import 'package:food_web/style.dart';
-import 'package:food_web/widget/drawer.dart';
+import 'package:food_web/widget/cart_widget/cart_drawer.dart';
 import 'package:food_web/widget/item_card.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';

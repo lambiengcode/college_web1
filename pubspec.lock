@@ -469,6 +469,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.19-nullsafety.6"
+  tiengviet:
+    dependency: "direct main"
+    description:
+      name: tiengviet
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.1"
   typed_data:
     dependency: transitive
     description:

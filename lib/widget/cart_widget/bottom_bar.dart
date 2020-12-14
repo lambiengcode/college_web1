@@ -188,13 +188,10 @@ class _BottomBarCartState extends State<BottomBarCart> {
                           fontWeight: FontWeight.w600,
                         ),
                       )
-                    : IconButton(
-                        icon: Icon(
-                          Feather.arrow_right,
-                          color: Colors.white,
-                          size: 20.0,
-                        ),
-                        onPressed: () {},
+                    : Icon(
+                        Feather.arrow_right,
+                        color: Colors.white,
+                        size: 20.0,
                       ),
           ],
         ),

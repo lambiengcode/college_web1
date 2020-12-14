@@ -2,15 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_web_scrollbar/flutter_web_scrollbar.dart';
 import 'package:food_web/data.dart';
 import 'package:food_web/page/auth/auth_page.dart';
-import 'package:food_web/page/product.dart';
-import 'package:food_web/page/product_page.dart';
+import 'package:food_web/page/product_page/product.dart';
+import 'package:food_web/page/product_page/product_page.dart';
 import 'package:food_web/service/auth.dart';
 import 'package:food_web/style.dart';
-import 'package:food_web/widget/drawer.dart';
+import 'package:food_web/widget/cart_widget/cart_drawer.dart';
 import 'package:food_web/widget/home_widget/carousel_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:food_web/widget/search_widget/search_drawer.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'style.dart';
@@ -53,6 +54,8 @@ class _HomePageState extends State<HomePage> {
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   Future<String> uid;
 
+  bool _search = false;
+
   @override
   void initState() {
     //Initialize the  scrollController
@@ -83,23 +86,25 @@ class _HomePageState extends State<HomePage> {
       endDrawer: Container(
         width: _width * .22,
         child: Drawer(
-          child: FutureBuilder(
-            future: uid,
-            builder: (context, snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.waiting:
-                  return Container();
-                default:
-                  if (snapshot.hasError) {
-                    return Container();
-                  }
+          child: _search == false
+              ? FutureBuilder(
+                  future: uid,
+                  builder: (context, snapshot) {
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.waiting:
+                        return Container();
+                      default:
+                        if (snapshot.hasError) {
+                          return Container();
+                        }
 
-                  return DrawerLayout(
-                    uid: snapshot.data,
-                  );
-              }
-            },
-          ),
+                        return DrawerLayout(
+                          uid: snapshot.data,
+                        );
+                    }
+                  },
+                )
+              : SearchDrawer(),
         ),
       ),
       // Disable opening the end drawer with a swipe gesture.
@@ -346,6 +351,22 @@ class _HomePageState extends State<HomePage> {
                       child: IntrinsicHeight(
                         child: Row(
                           children: [
+                            IconButton(
+                              icon: Icon(
+                                Feather.search,
+                                color: kPrimaryColor,
+                                size: 24.0,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _search = true;
+                                });
+                                _openEndDrawer();
+                              },
+                            ),
+                            SizedBox(
+                              width: 8.0,
+                            ),
                             FutureBuilder(
                               future: uid,
                               builder: (context, snapshot) {
@@ -374,6 +395,9 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                           );
                                         } else {
+                                          setState(() {
+                                            _search = false;
+                                          });
                                           _openEndDrawer();
                                         }
                                       },
