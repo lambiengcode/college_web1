@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:food_web/animation/fade_animation.dart';
+import 'package:food_web/main.dart';
 import 'package:food_web/service/auth.dart';
 import 'package:food_web/widget/loading.dart';
 
@@ -22,6 +23,7 @@ class _SignupPageState extends State<SignupPage> {
   String email = '';
   String password = '';
   String phone = '';
+  String address = '';
 
   bool hidePassword = true;
   bool loading = false;
@@ -194,12 +196,10 @@ class _SignupPageState extends State<SignupPage> {
                                         fontSize: 20.0,
                                         fontWeight: FontWeight.w400,
                                       ),
-                                      onChanged: (val) => phone = val.trim(),
-                                      validator: (val) =>
-                                          val.trim().length < 10 ||
-                                                  val.trim().length > 11
-                                              ? 'Type your address'
-                                              : null,
+                                      onChanged: (val) => address = val.trim(),
+                                      validator: (val) => val.trim().length == 0
+                                          ? 'Type your address'
+                                          : null,
                                       decoration: InputDecoration(
                                         contentPadding: EdgeInsets.only(
                                           left: 12.0,
@@ -230,13 +230,18 @@ class _SignupPageState extends State<SignupPage> {
                                   });
                                   dynamic result =
                                       await _auth.registerWithEmailAndPassword(
-                                          email, password, phone);
+                                          email, password, phone, address);
                                   if (result == null) {
                                     setState(() {
                                       loading = false;
                                     });
                                   } else {
-                                    Navigator.of(context).pop(context);
+                                    Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            HomePage(),
+                                      ),
+                                    );
                                   }
                                 }
                               },

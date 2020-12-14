@@ -26,7 +26,7 @@ class AuthService {
       FirebaseUser user = result.user;
 
       //create info client
-      await _createDataUser(user.uid, user.uid, '');
+      await _createDataUser(user.uid, user.uid, '', '');
 
       return _userFromFirebaseUser(user);
     } catch (e) {
@@ -59,14 +59,19 @@ class AuthService {
 
   //register with email & password
   Future registerWithEmailAndPassword(
-      String email, String password, String phone) async {
+      String email, String password, String phone, String address) async {
     try {
       var result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
-      FirebaseUser user = result.user;
+      User user = result.user;
+      final SharedPreferences prefs = await _prefs;
 
+      Future<String> _uid =
+          prefs.setString('uid', user.uid).then((bool success) {
+        return user.uid;
+      });
       //create info client
-      await _createDataUser(email, user.uid, phone);
+      await _createDataUser(email, user.uid, phone, address);
 
       return _userFromFirebaseUser(user);
     } catch (e) {
@@ -110,16 +115,17 @@ class AuthService {
     }
   }
 
-  Future<void> _createDataUser(email, uid, phone) async {
+  Future<void> _createDataUser(email, uid, phone, address) async {
     Firestore.instance.collection('users').document(uid).setData({
       'email': email,
       'id': uid,
       'username': email.toString().substring(0, email.toString().length - 10),
       'publishAt': DateTime.now(),
       'phone': phone,
-      'image': '',
-      'address': '',
-      'orders': '',
+      'image':
+          'https://images.unsplash.com/photo-1593642532842-98d0fd5ebc1a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80',
+      'address': address,
+      'orders': uid + DateTime.now().microsecondsSinceEpoch.toString(),
     });
   }
 
@@ -139,7 +145,7 @@ class AuthService {
         print("USING NOW");
       } else {
         //create nor data
-        _createDataUser(email, uid, phone);
+        _createDataUser(email, uid, phone, '');
       }
     });
   }
