@@ -1,5 +1,15 @@
-# Market Web using flutter and firebase
+## Market web using flutter and firebase :tada: :tada:
 
-## How to run project?
+## How I can run the project?
 
-flutter run -d Chrome or **https://mylife-5ce69.web.app/#/**
+### :rocket: Way 1:
+
+- Install flutter environment on your device.
+- Run **flutter pub get** on terminal in project.
+- Run **flutter run -d Chrome**.
+
+### :rocket: Way 2:
+
+- You can view my project with [this link](https://mylife-5ce69.web.app/#/)
+
+### :mortar_board: Let's contact me by this gmail: lambiengcode@gmail.com
