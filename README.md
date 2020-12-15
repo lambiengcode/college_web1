@@ -12,4 +12,8 @@
 
 - You can view my project with [this link](https://mylife-5ce69.web.app/#/)
 
+## Where is my report file?
+
+- Open **report.docx** to view my report.
+
 ### :mortar_board: Let's contact me by this gmail: lambiengcode@gmail.com
