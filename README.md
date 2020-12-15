@@ -14,6 +14,6 @@
 
 ## Where is my report file?
 
-- Open **report.docx** to view my report.
+- Open **BaoCaoCuoiKyDoAn1.docx** to view my report.
 
 ### :mortar_board: Let's contact me by this gmail: lambiengcode@gmail.com
